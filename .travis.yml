@@ -1,0 +1,21 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t devgibsonsp/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true devgibsonsp/react-test npm test
+
+after_success:
+  - docker build -t devgibsonsp/multi-client ./client
+  - docker build -t devgibsonsp/multi-nginx ./nginx
+  - docker build -t devgibsonsp/multi-server ./server
+  - docker build -t devgibsonsp/multi-worker ./worker
+  # Log into the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  - docker push devgibsonsp/multi-client
+  - docker push devgibsonsp/multi-nginx
+  - docker push devgibsonsp/multi-server
+  - docker push devgibsonsp/multi-worker
