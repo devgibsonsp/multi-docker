@@ -19,3 +19,17 @@ after_success:
   - docker push devgibsonsp/multi-nginx
   - docker push devgibsonsp/multi-server
   - docker push devgibsonsp/multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-2
+  app: multi-docker
+  env: MulitDocker-env
+  bucket_name: elasticbeanstalk-us-east-2-914103180374
+  bucket_path: docker-multi
+  on:
+    branch: master
+  access_key_id: 
+    secure: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: $AWS_SECRET_KEY
